@@ -1,8 +1,4 @@
-provider "aws" {
-  region = "us-east-1"
-  access_key = "<Access Key>"
-  secret_key = "<Secret Key>"
-}
+provider "aws" {}
 
 
 variable "subnet_prefix" {
@@ -151,20 +147,14 @@ resource "aws_instance" "apache-web-server-instance" {
     ami = "ami-00ddb0e5626798373"
     instance_type = "t2.micro"
     availability_zone = "us-east-1a"
-    key_name = "<your_key_name>"
+    key_name = "awskeypair"
 
     network_interface {
         device_index = 0
         network_interface_id = aws_network_interface.nic-for-prodVPC-Subnet-1.id
     }
 
-    user_data = <<-EOF
-                #!/bin/bash
-                sudo apt update -y
-                sudo apt install apache2 -y
-                sudo systemctl start apache2
-                sudo bash -c 'echo your web server > /var/www/html/index.html'
-                EOF
+    user_data = file("./user_data.sh")
 
     tags = {
         Name = "apache-web-server-instance"
