@@ -154,7 +154,13 @@ resource "aws_instance" "apache-web-server-instance" {
         network_interface_id = aws_network_interface.nic-for-prodVPC-Subnet-1.id
     }
 
-    user_data = file("./user_data.sh")
+    user_data = templatefile("./user_data.sh.tpl", {
+      f_name = "Nikita",
+      l_name = "Dubenchuk",
+      my_skills = ["Python", "Bash", "Git", "AWS", "Docker", "Networking"]
+    })
+
+    # user_data = templatefile("./user_data.sh.tpl", {f_name = "Nikita",l_name = "Dubenchuk",my_skills = ["Python", "Bash", "Git", "AWS", "Docker", "Networking"]})
 
     tags = {
         Name = "apache-web-server-instance"
